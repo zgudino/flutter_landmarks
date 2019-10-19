@@ -1,42 +1,38 @@
-import 'dart:async';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:landmarks_flutter/models/landmark.dart';
-import 'package:landmarks_flutter/views/star_button.dart';
+import 'package:landmarks_flutter/widgets/star_button.dart';
+import 'package:mapbox_gl/mapbox_gl.dart';
 
 class LandmarkDetail extends StatelessWidget {
   final Landmark landmark;
-  final Completer<GoogleMapController> _controller = Completer();
+  final String title;
 
   LandmarkDetail({
     Key key,
     @required this.landmark,
+    this.title,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    print(title);
+
     return Material(
-      child: CupertinoPageScaffold(
-        navigationBar: const CupertinoNavigationBar(
-          previousPageTitle: 'Landmarks',
-          backgroundColor: const Color(0x00FFFFFF),
-          border: Border(
-            bottom: BorderSide.none,
-          ),
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text("${title ?? ""}"),
         ),
-        child: Stack(
+        body: Stack(
           children: <Widget>[
             Positioned(
               top: 0.0,
               left: 0.0,
               right: 0.0,
-              height: 450.0,
+              height: 300.0,
               child: _mapView(),
             ),
             Positioned(
-              top: 320.0,
+              top: 150.0,
               left: 20.0,
               right: 20.0,
               child: Column(
@@ -48,7 +44,8 @@ class LandmarkDetail extends StatelessWidget {
                       Flexible(
                         child: Text(
                           landmark.name,
-                          style: TextStyle().copyWith(fontWeight: FontWeight.w400, fontSize: 28.0),
+                          style: TextStyle().copyWith(
+                              fontWeight: FontWeight.w400, fontSize: 28.0),
                         ),
                       ),
                       Padding(padding: EdgeInsets.only(top: 12.0)),
@@ -74,12 +71,14 @@ class LandmarkDetail extends StatelessWidget {
                     children: <Widget>[
                       Text(
                         landmark.park,
-                        style: TextStyle().copyWith(fontWeight: FontWeight.w500, fontSize: 14.0),
+                        style: TextStyle().copyWith(
+                            fontWeight: FontWeight.w500, fontSize: 14.0),
                       ),
                       Expanded(child: Container()),
                       Text(
                         landmark.state,
-                        style: TextStyle().copyWith(fontWeight: FontWeight.w500, fontSize: 14.0),
+                        style: TextStyle().copyWith(
+                            fontWeight: FontWeight.w500, fontSize: 14.0),
                       ),
                     ],
                   ),
@@ -93,17 +92,26 @@ class LandmarkDetail extends StatelessWidget {
   }
 
   Widget _mapView() {
-    return GoogleMap(
-      mapType: MapType.normal,
-      initialCameraPosition: CameraPosition(
-        target: LatLng(landmark.coordinates.latitude, landmark.coordinates.longitude),
-        zoom: 13.70,
+//    return GoogleMap(
+//      mapType: MapType.normal,
+//      initialCameraPosition: CameraPosition(
+//        target: LatLng(
+//            landmark.coordinates.latitude, landmark.coordinates.longitude),
+//        zoom: 13.70,
+//      ),
+//      myLocationButtonEnabled: false,
+//      onMapCreated: (GoogleMapController controller) {
+//        _controller.complete(controller);
+//      },
+//    );
+    return MapboxMap(
+        initialCameraPosition: CameraPosition(
+      target: LatLng(
+        landmark.coordinates.latitude,
+        landmark.coordinates.longitude,
       ),
-      myLocationButtonEnabled: false,
-      onMapCreated: (GoogleMapController controller) {
-        _controller.complete(controller);
-      },
-    );
+      zoom: 13.70,
+    ));
   }
 
   Widget _imageView() {
@@ -118,13 +126,6 @@ class LandmarkDetail extends StatelessWidget {
               width: 4.0,
               color: Colors.transparent,
             ),
-            boxShadow: [
-              BoxShadow(
-                color: const Color(0x22000000),
-                blurRadius: 10.0,
-                spreadRadius: 10.0,
-              ),
-            ],
             borderRadius: const BorderRadius.all(const Radius.circular(125.0)),
           ),
           width: 250.0,
