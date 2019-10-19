@@ -1,51 +1,51 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:landmarks_flutter/common/constants.dart';
-import 'package:landmarks_flutter/screens/landmark_detail.dart';
-import 'package:landmarks_flutter/views/landmark_cell.dart';
+import 'package:landmarks_flutter/constants.dart';
 import 'package:landmarks_flutter/models/data.dart';
+import 'package:landmarks_flutter/views/landmark_detail.dart';
+import 'package:landmarks_flutter/widgets/landmark_cell.dart';
 
 void main() {
-  loadData().then((_) {
-    runApp(MyApp());
+  landmarksData().then((_) {
+    runApp(LandmarksApp());
   });
 }
 
-class MyApp extends StatelessWidget {
+class LandmarksApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Landmarks',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: MyHomePage(title: 'Landmarks'),
+      theme: ThemeData(primaryColor: Colors.blueAccent),
+      home: Home(title: 'Landmarks'),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+class Home extends StatefulWidget {
+  Home({Key key, this.title}) : super(key: key);
 
   final String title;
 
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  _HomeState createState() => _HomeState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _HomeState extends State<Home> {
   bool _showFavoritesOnly = false;
 
   @override
   Widget build(BuildContext context) {
     final landmarks = _showFavoritesOnly ? favoriteLandmarks : allLandmarks;
+
     return Material(
-      child: CupertinoPageScaffold(
-        child: CustomScrollView(
+      child: Scaffold(
+        body: CustomScrollView(
           slivers: <Widget>[
-            CupertinoSliverNavigationBar(
-              largeTitle: Text(widget.title),
-              backgroundColor: Colors.white,
+            SliverAppBar(
+              centerTitle: true,
+              title: Text(widget.title),
+              pinned: true,
             ),
             SliverToBoxAdapter(
               child: Padding(
@@ -57,12 +57,12 @@ class _MyHomePageState extends State<MyHomePage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     Text(
-                      'Show Favorites Only',
+                      'Mostrar solo favoritos',
                       style: TextStyle().copyWith(
                         fontSize: 17.0,
                       ),
                     ),
-                    CupertinoSwitch(
+                    Switch(
                       value: _showFavoritesOnly,
                       onChanged: (state) {
                         setState(() {
@@ -89,10 +89,11 @@ class _MyHomePageState extends State<MyHomePage> {
                     onTap: () {
                       Navigator.push(
                         context,
-                        CupertinoPageRoute(
+                        MaterialPageRoute(
                           builder: (context) => LandmarkDetail(
-                                landmark: landmark,
-                              ),
+                            landmark: landmark,
+                            title: widget.title,
+                          ),
                         ),
                       );
                     },

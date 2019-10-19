@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:landmarks_flutter/common/constants.dart';
+import 'package:landmarks_flutter/constants.dart';
 import 'package:landmarks_flutter/models/landmark.dart';
-import 'package:landmarks_flutter/views/star_button.dart';
+import 'package:landmarks_flutter/widgets/star_button.dart';
 
 class LandmarkCell extends StatelessWidget {
   final Landmark landmark;
@@ -29,21 +29,13 @@ class LandmarkCell extends StatelessWidget {
               width: 50.0,
             ),
             title: Text(landmark.name),
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                AnimatedBuilder(
-                  animation: landmark,
-                  builder: (context, widget) {
-                    return landmark.isFavorite ? StarButton(isFavorite: landmark.isFavorite) : Container();
-                  },
-                ),
-                Icon(
-                  Icons.arrow_forward_ios,
-                  size: 15.0,
-                  color: const Color(0xFFD3D3D3),
-                ),
-              ],
+            trailing: AnimatedBuilder(
+              animation: landmark,
+              builder: (context, widget) {
+                return landmark.isFavorite
+                    ? StarButton(isFavorite: landmark.isFavorite)
+                    : SizedBox();
+              },
             ),
           ),
         ),
